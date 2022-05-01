@@ -1,6 +1,7 @@
 package br.ufrn.imd.blackjackClient.utils;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -9,37 +10,42 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import br.ufrn.imd.blackjackClient.exceptions.InputTimeoutException;
-
 public class TimeoutInput {
 	
-	private static Long DEFAULT_TIMEOUT = 15l;
-	private static Integer DEFAULT_THREAD_NUMBER = 1;
-	
-	public static String inputString() throws InputTimeoutException {
-		
-		Callable<String> callable = () -> new Scanner(System.in).next();
-		ExecutorService service = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
-		Future<String> inputFuture = service.submit(callable);
-		
+	public static Long DEFAULT_TIMEOUT = 15l;
+
+	static public String string() {
+		ExecutorService ex = Executors.newSingleThreadExecutor();
+		Future<String> request = ex.submit(new StringInput());
 		try {
-			return inputFuture.get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-		} catch (InterruptedException | ExecutionException | TimeoutException ex) {
-			throw new InputTimeoutException();
+			String name = request.get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+			return name;
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			return "";
 		}
-		
 	}
-	
-	public static Long inputLong() throws InputTimeoutException {
-		Callable<Long> callable = () -> new Scanner(System.in).nextLong();
-		ExecutorService service = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
-		Future<Long> inputFuture = service.submit(callable);
+
+}
+
+
+class StringInput implements Callable<String> {
+
+	@Override
+	public String call() throws Exception {
 		
-		try {
-			return inputFuture.get(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-		} catch (InterruptedException | ExecutionException | TimeoutException ex) {
-			throw new InputTimeoutException();
-		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String input = "";
+		do {
+		      try {
+		        while (!br.ready()) {
+		          Thread.sleep(TimeoutInput.DEFAULT_TIMEOUT);
+		        }
+		        input = br.readLine();
+		      } catch (InterruptedException e) {
+		        return "";
+		      }
+		    } while ("".equals(input));
+		return input;
 	}
 
 }

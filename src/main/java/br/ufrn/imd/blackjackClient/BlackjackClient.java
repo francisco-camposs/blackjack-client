@@ -1,9 +1,8 @@
 package br.ufrn.imd.blackjackClient;
 
 import br.imd.ufrn.blackjackClient.model.Player;
-import br.ufrn.imd.blackjackClient.exceptions.InputTimeoutException;
+import br.ufrn.imd.blackjackClient.exceptions.EndingGameException;
 import br.ufrn.imd.blackjackClient.services.GameClient;
-import br.ufrn.imd.blackjackClient.services.PlayerInitializer;
 
 public class BlackjackClient {
 
@@ -11,29 +10,27 @@ public class BlackjackClient {
 		try {
 			greetPlayer();
 			startingGame();
-		} catch (InputTimeoutException e) {
-			System.out.println("O nome do jogador não foi adicionado a tempo.");
+			endingGame();
+		} catch (EndingGameException ex) {
+			System.out.println(ex.getMessage());
 			endingGame();
 		} 
 	}
 	
 	private static void greetPlayer() {
 		System.out.println("O jogo está iniciando...");
-		System.out.println("Welcome To");
-		System.out.println(
-				  "  ____  _            _    _            _    \n"
-				+ " |  _ \\| |          | |  (_)          | |   \n"
-				+ " | |_) | | __ _  ___| | ___  __ _  ___| | __\n"
-				+ " |  _ <| |/ _` |/ __| |/ / |/ _` |/ __| |/ /\n"
-				+ " | |_) | | (_| | (__|   <| | (_| | (__|   < \n"
-				+ " |____/|_|\\__,_|\\___|_|\\_\\ |\\__,_|\\___|_|\\_\\\n"
-				+ "                        _/ |                \n"
-				+ "                       |__/                 \n");
+		System.out.println("  ____  _            _    _            _    ");
+		System.out.println(" |  _ \\| |          | |  (_)          | |   ");
+		System.out.println(" | |_) | | __ _  ___| | ___  __ _  ___| | __");
+		System.out.println(" |  _ <| |/ _` |/ __| |/ / |/ _` |/ __| |/ /");
+		System.out.println(" | |_) | | (_| | (__|   <| | (_| | (__|   < ");
+		System.out.println(" |____/|_|\\__,_|\\___|_|\\_\\ |\\__,_|\\___|_|\\_\\");
+		System.out.println("                        _/ |                ");
+		System.out.println("                       |__/                 ");
 	}
 
-	private static void startingGame() throws InputTimeoutException {
-		System.out.println("Jogo iniciando ...");
-		Player player = PlayerInitializer.buildPlayer();
+	private static void startingGame() throws EndingGameException {
+		Player player = Player.create();
 		GameClient client = GameClient.builder().player(player).build();
 		client.start();
 	}

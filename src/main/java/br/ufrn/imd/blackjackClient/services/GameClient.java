@@ -13,7 +13,7 @@ public class GameClient {
 	private Player player;
 
 	public void start() {
-		
+		System.out.println("Jogo iniciando aqui");
 	}	
 
 }

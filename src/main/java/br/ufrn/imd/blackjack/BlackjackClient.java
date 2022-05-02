@@ -51,6 +51,23 @@ public class BlackjackClient {
 		GameClient client = new GameClient();
 		client.setName(name);
 		server.addPlayer(client);
+		
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while(true) {
+			System.out.println("Ação: 1 - Puxar carta | 2 - Apostar -> (Opção Dinheiro) = (2 10) | 3 - Encerrar");
+			String command = client.getCommand();
+			server.getCommand(name, command);
+			
+			//Quando usar o comando encerrar, o jogador deve esperar os outros jogadores terminarem
+		}
+		
+		
+		
 	}
 	
 	private static void endingGame() {
